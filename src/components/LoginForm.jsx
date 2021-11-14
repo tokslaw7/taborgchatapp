@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Axios } from "axios";
+import axios from "axios";
 
 
 
@@ -13,7 +13,7 @@ const LoginForm = () => {
         const authObject = { 'Project-ID': "e6686382-6547-4837-9206-c5bdca8291dc", 'User-Name': username, 'User-Secret': password}
 
         try {
-            await Axios.get('https://api.chatengine.io/chats', { headers: authObject });
+            await axios.get('https://api.chatengine.io/chats', { headers: authObject });
 
             localStorage.setItem('username', username);
             localStorage.setItem('password', password);

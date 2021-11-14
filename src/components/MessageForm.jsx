@@ -11,22 +11,18 @@ const MessageForm = (props) => {
         event.preventDefault ();
 
         const text = value.trim();
-
-        if (text.length > 0 ) sendMessage(creds, chatId , { text })
+        if (text.length > 0 ) sendMessage(creds, chatId , { text });
         setValue ('');
     }
 
     const handleChange = (event) => {
         setValue (event.target.value);
-
-        isTyping(props,chatId);
-
+        isTyping(props, chatId);
     }
 
+    
     const handleUpload = (event) => {
-        sendMessage(creds,chatId, { files:event.target.files, text: ''})
-
-
+        sendMessage(creds,chatId, { files: event.target.files, text: ''})
     }
 
 
@@ -34,7 +30,7 @@ const MessageForm = (props) => {
         <form className="message-form" onSubmit={handleSubmit}>
             <input 
             className="message-input"
-            placeholder="send a message ..."
+            placeholder="sendmessage ..."
             value= {value}
             onChange={handleChange}
             onSubmit={handleSubmit}
@@ -46,9 +42,9 @@ const MessageForm = (props) => {
         </label>
         <input
                 type="file"
-                multiple= {false}
+                multiple={false}
                 id="upload-button"
-                style={{display:"none"}}
+                style={{display: "none"}}
                 onChange={handleUpload}
         />
         <button type='submit' className="send-button">

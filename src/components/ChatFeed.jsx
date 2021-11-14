@@ -1,4 +1,4 @@
-import MessageForm from "./MesageForm";
+import MessageForm from "./MessageForm";
 import MyMessage from "./MyMessage";
 import TheirMessage from "./TheirMessage";
 
@@ -40,8 +40,8 @@ const ChatFeed = (props) => {
                 <div className="message-block">
                 {
                     isMyMessage
-                    ? <MyMessage />
-                    : <TheirMessage />
+                    ? <MyMessage  message={message} />
+                    : <TheirMessage message={message} lastMessage={messages[lastMessageKey]} />
                 }
                 </div>
                 <div className="read-receipts" style ={{ marginRight: isMyMessage ? '18px' : '0px', marginLeft: isMyMessage ? '0px' : '68px' }}>
@@ -51,15 +51,26 @@ const ChatFeed = (props) => {
             )
         })
     }
-    renderMessages ();
+   
+    if (!chat) return 'Loading ..';
 
-    //console.log (chat, userName, messages);
-
-    return (
-        <div>
-            Taborg ChatFeed
-        </div>
-    )
-}
+            //console.log (chat, userName, messages);
+                return (
+                        <div className= "chat-feed">
+                            <div className= "chat-title-container">
+                                <div className="chat-title">{chat.title}</div>
+                                <div className="chat-subtitle">
+                                {chat.people.map((person) => `${person.person.username}`)}
+                                </div>
+                            </div>
+                           {renderMessages()}
+                           <div style={{height: '100px'}} />
+                           <div className="message-form-container">
+                               <MessageForm  {...props} chatId={activeChat}/>
+                           </div>
+                        </div>                    
+                    );
+                } 
+            
 
 export default ChatFeed;
