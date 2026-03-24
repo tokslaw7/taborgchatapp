@@ -1,70 +1,196 @@
-# Getting Started with Create React App
+# TABORG Chat App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A lightweight real-time chat application built with **React** and **ChatEngine**. The app provides a simple login screen, a custom chat feed, support for text and image messages, read receipts, and typing indicators.
+
+> **Note:** Although the repository description says **MERN**, the public code in this repository is currently a **React frontend** integrated with ChatEngine for real-time chat features.
+
+## Overview
+
+TABORG Chat App is a chat UI project bootstrapped with Create React App and customized with reusable components for:
+- user login
+- chat feed rendering
+- outgoing and incoming message display
+- file/image uploads
+- read receipts
+- typing indicators
+
+The project uses the `react-chat-engine` package for the real-time chat experience and `axios` to validate user credentials against the ChatEngine API.
+
+## Features
+
+- **Login form** for username and password entry
+- **Real-time chat interface** powered by ChatEngine
+- **Custom message feed** for better control over layout and styling
+- **Separate message components** for your messages and other users' messages
+- **Image/file attachment support**
+- **Typing indicator support**
+- **Read receipts** using user avatars
+- **Local storage persistence** for login state
+
+## Tech Stack
+
+- **Frontend:** React 17, Create React App
+- **HTTP Client:** Axios
+- **Chat SDK:** `react-chat-engine`
+- **Icons:** `@ant-design/icons`
+- **Styling:** CSS
+
+## Project Structure
+
+```bash
+src/
+├── components/
+│   ├── ChatFeed.jsx
+│   ├── LoginForm.jsx
+│   ├── MessageForm.jsx
+│   ├── MyMessage.jsx
+│   └── TheirMessage.jsx
+├── App.css
+├── App.js
+├── index.css
+└── index.js
+```
+
+## How It Works
+
+### Authentication flow
+- The app checks whether a `username` exists in `localStorage`.
+- If no username is found, it renders the `LoginForm`.
+- The login form sends a request to the ChatEngine API to validate the supplied credentials.
+- On success, the username and password are stored in `localStorage`, and the page reloads.
+
+### Chat experience
+- `App.js` renders the `ChatEngine` component.
+- `ChatFeed.jsx` customizes how chats, messages, and read receipts appear.
+- `MessageForm.jsx` handles text input, typing events, and image uploads.
+- `MyMessage.jsx` and `TheirMessage.jsx` render messages differently depending on the sender.
+
+## Installation
+
+### Prerequisites
+Make sure you have the following installed:
+- **Node.js** (recommended LTS version)
+- **npm**
+
+### Clone the repository
+```bash
+git clone https://github.com/tokslaw7/taborgchatapp.git
+cd taborgchatapp
+```
+
+### Install dependencies
+```bash
+npm install
+```
+
+### Start the development server
+```bash
+npm start
+```
+
+The app will open at:
+```bash
+http://localhost:3000
+```
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+```bash
+npm start
+```
+Runs the app in development mode.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```bash
+npm test
+```
+Launches the test runner.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```bash
+npm run build
+```
+Builds the app for production.
 
-### `npm test`
+```bash
+npm run eject
+```
+Ejects the app configuration.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Configuration Notes
 
-### `npm run build`
+The current implementation includes ChatEngine-specific values directly in the source code. Before using this project in a shared or production environment, update the configuration.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Values currently wired into the app
+- **Project ID** is referenced in the app
+- **ChatEngine credentials** are referenced in the app
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Recommended improvement
+Move all sensitive configuration into environment variables.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Example:
 
-### `npm run eject`
+```env
+REACT_APP_CHAT_ENGINE_PROJECT_ID=your_project_id
+REACT_APP_CHAT_ENGINE_USERNAME=your_username
+REACT_APP_CHAT_ENGINE_SECRET=your_secret
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Then reference them in your React code:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```js
+projectID={process.env.REACT_APP_CHAT_ENGINE_PROJECT_ID}
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Important Implementation Note
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+The current app has a mismatch between the login flow and the main chat session:
 
-## Learn More
+- `LoginForm.jsx` validates the entered username and password and stores them in `localStorage`
+- `App.js` currently renders `ChatEngine` with hardcoded `userName` and `userSecret`
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+That means the login form behaves more like an access gate than a true dynamic session switch.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Recommended fix
+Update `App.js` to use the values stored in `localStorage`:
 
-### Code Splitting
+```js
+userName={localStorage.getItem('username')}
+userSecret={localStorage.getItem('password')}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+This change will make the chat session match the logged-in user.
 
-### Analyzing the Bundle Size
+## Suggested Enhancements
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- Add logout functionality
+- Display login errors on failed authentication
+- Move secrets and project IDs into environment variables
+- Add route protection
+- Add better validation and form feedback
+- Add user profile support
+- Add chat room creation and management
+- Add unit and integration tests
+- Improve accessibility and responsive behavior
 
-### Making a Progressive Web App
+## Security Note
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Do not keep production credentials, API secrets, or user secrets directly in frontend source files. Rotate any exposed credentials and move them to environment-based configuration where possible.
 
-### Advanced Configuration
+## Learning Value
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+This project is a good example of how to:
+- integrate a third-party real-time chat SDK into a React app
+- break a chat UI into reusable components
+- handle file uploads in a messaging workflow
+- customize sender-specific message rendering
+- build a simple authenticated chat experience quickly
 
-### Deployment
+## License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+No license is currently specified in the repository. Add a license file if you want to define reuse permissions.
 
-### `npm run build` fails to minify
+## Author
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Tokslaw**  
+GitHub: [@tokslaw7](https://github.com/tokslaw7)
